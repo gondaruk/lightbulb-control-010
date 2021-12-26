@@ -1,0 +1,55 @@
+################################################################################
+################################################################################
+# config.toml
+
+_null_if_empty = ['MQTT_USERNAME', 'MQTT_PASSWORD']
+_not_a_string = ['RANGE_LOW', 'RANGE_HIGH']
+_wrap_in_double_underscore = true
+
+################################################################################
+################################################################################
+# Common (this configuration will be applied to every board)
+[_defaults]
+DEBUG           = "1"  # whether serial debug should be written
+UNIT_NAME       = ""  # unit name used in MQTT client_id and topics
+
+                # (DHCP is not supported, due to extra latencies)
+NETWORK_IP      = ""
+NETWORK_SUBNET  = "255.255.255.0"
+NETWORK_GATEWAY = "10.10.1.1"
+NETWORK_DNS1    = "10.10.1.2"
+NETWORK_DNS2    = "10.10.1.1"
+
+WIFI_SSID               = "MyWiFi"
+WIFI_PASSPHRASE         = "123456789"
+WIFI_CONNECT_TIMEOUT_MS = 1800000  # how long should we try to connect to WiFi
+                                   # (for me not having control is preferred,
+                                   # rather then blinking due to ESP restarts)
+                   # Use IP to avoid extra delays for resolving
+MQTT_HOST          = "10.10.1.2"
+MQTT_PORT          = 1883
+MQTT_USERNAME      = "user"
+MQTT_PASSWORD      = "password"
+MQTT_CLIENT_ID     = "lightbulb-control-010-{UNIT_NAME}-"
+MQTT_TOPIC_HELLO   = "iot/diy/lightbulb-control-010/{UNIT_NAME}/hello" # client_id sent on connect
+MQTT_TOPIC_REPORT  = "iot/diy/lightbulb-control-010/{UNIT_NAME}" # reports status as JSON
+                                              # - targetBrightness (0-100)
+                                              # - targetPwmValue (0-1023)
+MQTT_TOPIC_SET     = "iot/diy/lightbulb-control-010/{UNIT_NAME}/set" # listen for targetBrightness
+MQTT_TOPIC_SET_RAW = "iot/diy/lightbulb-control-010/{UNIT_NAME}/set/raw" # listen for raw pwmValue
+
+RANGE_LOW  = "10L"  # Limit PWM Range, instead of interpolating 0-100 to 0-1023
+RANGE_HIGH = "200L" # 0 becomes 10 and 100 becomes 200
+SMOOTH_INTERVAL_MS = 2 # (optional) smoothly dim light by incrementing pwm
+
+
+################################################################################
+################################################################################
+# Boards (applies to board with a specific MAC address)
+["50:02:91:79:3D:CA"]
+UNIT_NAME = "kitchen"
+NETWORK_IP = "10.10.1.71"
+
+["50:02:91:79:45:52"]
+UNIT_NAME = "bedroom"
+NETWORK_IP = "10.10.1.72"
